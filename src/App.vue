@@ -1,30 +1,41 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div
+    class="overflow-hidden bg-gradient-to-r from-cyan-500 to-blue-500 flex h-screen justify-center items-center font-Comic"
+  >
+  <transition name="component-fade" mode="out-in">
+  <router-view @selectedGroup="showTimetable" :selectedGroup="selectedGroup" :key="$route.path"/>
+  </transition>
+  </div>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<script>
+import timeTableView from "./components/timeTableView.vue";
+import helloScreenView from "./components/helloScreenView.vue";
+export default {
+  data(){
+    return {
+      selectedGroup: '',
+      database: null,
+      errors: [],
+    }
+  },
+  methods: {
+    showTimetable(data){
+      this.selectedGroup = data.selectedGroup
+    },
+    async fetchDatabase(){
+      try {
+        const response = await axios.get(`https://www.googleapis.com/drive/v3/files/${"1CNyHQdbbkIerQRXicA1FaYnUsYhroe_l"}?alt=media&key=${"AIzaSyAKsTsHJNrogKzIUV2uV3mFICb4GgRMv5I"}`)
+        this.database = response.data
+      }
+      catch (e) {
+        alert('Ошибка загрузки базы данных');
+      }
+    }
+  },
+  components: {
+    timeTableView,
+    helloScreenView,
+  },
+};
+</script>
+<style src="./style.css" />
